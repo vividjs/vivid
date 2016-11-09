@@ -1,0 +1,2 @@
+const CACHE = {};
+export default {};

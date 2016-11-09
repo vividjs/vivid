@@ -1,0 +1,26 @@
+{
+  "name": "jtml",
+  "version": "0.0.1-development",
+  "description": "JavaScript Template Markup Language",
+  "main": "./lib/jtml.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kevinokerlund/jtml.git"
+  },
+  "author": "Kevin Okerlund",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/kevinokerlund/jtml/issues"
+  },
+  "homepage": "https://github.com/kevinokerlund/jtml#readme",
+  "devDependencies": {
+    "babel-core": "^6.18.2",
+    "babel-loader": "^6.2.7",
+    "babel-plugin-add-module-exports": "^0.2.1",
+    "babel-preset-es2015": "^6.18.0",
+    "webpack": "^1.13.3"
+  }
+}

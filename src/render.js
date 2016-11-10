@@ -25,8 +25,6 @@ export default class Render {
 			}
 		}
 
-		// document.querySelector(selectorOrNode).innerHTML = this.html;
-
 		return this;
 	}
 }

@@ -14,18 +14,11 @@ export function fragmentFromString(strHTML) {
 }
 
 function encodeHtml(input) {
-	// Even though we're adding some more regex, this simple regex allows this function to be more efficient
-	// on large data sets
-	if (/[<>'"&]/.test(input)) {
-		// This method is faster instead of creating text nodes
-		return String(input)
-			.replace(/&/g, '&amp;')
-			.replace(/"/g, '&quot;')
-			.replace(/'/g, '&#39;')
-			.replace(/</g, '&lt;')
-			.replace(/>/g, '&gt;');
+	if (/[&"'<>]/i.test(input)) {
+		return document.createElement('a').appendChild(
+			document.createTextNode(input)
+		).parentNode.innerHTML;
 	}
-
 	return input;
 }
 

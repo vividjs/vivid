@@ -1,0 +1,22 @@
+import UTILS from './utils';
+
+export function getTemplateContent(possibleSelectorOrHTMLOrNode) {
+	if (UTILS.isDOM(possibleSelectorOrHTMLOrNode)) {
+		return possibleSelectorOrHTMLOrNode.innerHTML;
+	}
+
+	try {
+		let element = document.querySelector(possibleSelectorOrHTMLOrNode);
+		if (element) {
+			return element.innerHTML;
+		}
+	} catch (e) {
+	}
+
+	// Hitting this return means that it is probably HTML
+	return possibleSelectorOrHTMLOrNode;
+}
+
+export default {
+	getTemplateContent
+}

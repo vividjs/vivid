@@ -1,38 +1,29 @@
-import CACHE from './cache';
-import UTILS from './utils';
 import Compiler from './compiler';
 import Render from './render';
+import Templates from './templates';
+import Cache from './cache';
 
-function getTemplateContent(possibleSelectorOrHTMLOrNode) {
-	if (UTILS.isDOM(possibleSelectorOrHTMLOrNode)) {
-		return possibleSelectorOrHTMLOrNode.innerHTML;
+class JTML {
+	static compile(possibleSelectorOrHTMLOrDomNode) {
+
+		let templateContent = Templates.getTemplateContent(possibleSelectorOrHTMLOrDomNode);
+
+		let compiledTemplate = Compiler.compile(templateContent);
+
+		return new Render(compiledTemplate);
 	}
 
-	if (typeof possibleSelectorOrHTMLOrNode == 'string' && possibleSelectorOrHTMLOrNode[0] == '#') {
-		let element = document.querySelector(possibleSelectorOrHTMLOrNode);
-		if (element) {
-			return element.innerHTML;
-		}
+	static clearCache() {
+		Cache.clearCache();
 	}
 
-	// Hitting this return means that it is probably HTML
-	return possibleSelectorOrHTMLOrNode;
+	static registerHelper() {
+		console.log('TODO');
+	}
+
+	static config() {
+		console.log('TODO');
+	}
 }
-
-function JTML() {
-}
-
-JTML.compile = function (possibleSelectorOrHTMLOrNode) {
-	let templateContent = getTemplateContent(possibleSelectorOrHTMLOrNode);
-
-	let operationalFunction = CACHE[templateContent];
-
-	if (!operationalFunction) {
-		operationalFunction = Compiler(templateContent);
-		CACHE[templateContent] = operationalFunction;
-	}
-
-	return new Render(operationalFunction);
-};
 
 export default JTML;

@@ -13,6 +13,13 @@ function customHelper(...replaceMatch) {
 	return {command, args};
 }
 
+function setLineNumbers(jtml) {
+	return jtml
+		.split(/\n/)
+		.map((line, i) => `{% LINE(${i}); %}${line}`)
+		.join(' ');
+}
+
 
 export function compile(jtml) {
 	// if this template exists in cache, use that instead
@@ -22,11 +29,16 @@ export function compile(jtml) {
 		return preparedTemplate;
 	}
 
-	let functionContent = `var p = [];
-		with (obj) {
-		p.push('${
-		jtml
-			.replace(/[\r\n\t]/g, ' ')
+	let functionContent = `
+		var errorLineNumber;
+		try {
+			var LINE = function (number) { errorLineNumber = number };
+			var p = [];
+			with (obj) {
+			p.push('${
+
+		setLineNumbers(jtml)
+			.replace(/[\r\t]/g, ' ')
 			// .replace(/'(?![^{]*})/g, `\\'`)
 
 			// Escape all '
@@ -50,7 +62,12 @@ export function compile(jtml) {
 			// Parse closing code snippet
 			.replace(/%}/g, `\np.push('`)
 		}');\n}
-		return p.join('')`;
+			return p.join('')
+		} catch(e) {
+			e = 'JTML error, line ' + errorLineNumber + ': ' + e;
+			console.error(e);
+			return e;
+		}`;
 
 	preparedTemplate = new Function('obj', 'UTILS', 'HELPERS', functionContent);
 	CACHE.CACHE[jtml] = preparedTemplate;

@@ -13,7 +13,7 @@ export function fragmentFromString(strHTML) {
 	return document.createRange().createContextualFragment(strHTML);
 }
 
-function encodeHtml(input) {
+export function encodeHtml(input) {
 	if (/[&"'<>]/i.test(input)) {
 		return document.createElement('a').appendChild(
 			document.createTextNode(input)

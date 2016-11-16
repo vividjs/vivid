@@ -17,7 +17,7 @@ export default class Render {
 			.forEach(el => {
 
 				if (events) {
-					el.getAttribute('jtml-event').replace(/\[(.*?)]\((.*?)\)/g, (...args) => {
+					el.getAttribute('jtml-event').replace(/@(.*?)\((.*?)\)/g, (...args) => {
 						let eventType = args[1];
 						let handlers = args[2].trim().split(/\s+/);
 

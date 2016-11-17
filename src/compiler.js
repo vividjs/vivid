@@ -1,4 +1,5 @@
 import * as CACHE from './cache';
+import {hashCode} from './utils';
 
 const JTML_SPACE = '__JTML-SPACE__';
 
@@ -22,8 +23,10 @@ function setLineNumbers(jtml) {
 
 
 export function compile(jtml) {
+	let hash = hashCode(jtml);
+
 	// if this template exists in cache, use that instead
-	let preparedTemplate = CACHE.CACHE[jtml];
+	let preparedTemplate = CACHE.CACHE[hash];
 
 	if (preparedTemplate) {
 		return preparedTemplate;
@@ -70,8 +73,8 @@ export function compile(jtml) {
 		}`;
 
 	preparedTemplate = new Function('obj', 'UTILS', 'HELPERS', functionContent);
-	CACHE.CACHE[jtml] = preparedTemplate;
-	CACHE.deepCache(jtml, functionContent);
+	CACHE.CACHE[hash] = preparedTemplate;
+	// CACHE.deepCache(hash, functionContent);
 	return preparedTemplate;
 }
 

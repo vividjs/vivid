@@ -22,9 +22,25 @@ export function encodeHtml(input) {
 	return input;
 }
 
+export function hashCode(str) {
+	let hash = 0;
+	let i = 0;
+	let chr;
+	let len = str.length;
+
+	for (i; i < len; i++) {
+		chr = str.charCodeAt(i);
+		hash = ((hash << 5) - hash) + chr;
+		hash |= 0; // Convert to 32bit integer
+	}
+
+	return hash
+}
+
 export default {
 	regexEscape,
 	isDOM,
 	fragmentFromString,
-	encodeHtml
+	encodeHtml,
+	hashCode
 };

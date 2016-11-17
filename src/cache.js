@@ -6,14 +6,13 @@ let storedTemplates = JSON.parse(localStorage.getItem(localStorageKey));
 let DEEP_CACHE = storedTemplates || {};
 
 if (storedTemplates) {
-	Object.keys(storedTemplates).forEach(jtml => {
-		CACHE[jtml] = new Function('obj', 'UTILS', 'HELPERS', storedTemplates[jtml]);
+	Object.keys(storedTemplates).forEach(hash => {
+		CACHE[hash] = new Function('obj', 'UTILS', 'HELPERS', storedTemplates[hash]);
 	});
 }
 
-function deepCache(jtml, functionContent) {
-
-	DEEP_CACHE[jtml] = functionContent;
+function deepCache(hash, functionContent) {
+	DEEP_CACHE[hash] = functionContent;
 
 	window.setTimeout(function () {
 		localStorage.setItem(localStorageKey, JSON.stringify(DEEP_CACHE));
@@ -21,6 +20,7 @@ function deepCache(jtml, functionContent) {
 }
 
 function clearCache() {
+	Object.keys(CACHE).forEach(key => delete CACHE[key]);
 	localStorage.removeItem(localStorageKey);
 }
 

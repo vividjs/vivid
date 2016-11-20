@@ -2,6 +2,7 @@ import Compiler from './compiler';
 import Render from './render';
 import Templates from './templates';
 import Cache from './cache';
+import Helpers from './helpers';
 
 class JTML {
 	static compile(possibleSelectorOrHTMLOrDomNode) {
@@ -17,8 +18,8 @@ class JTML {
 		Cache.clearCache();
 	}
 
-	static registerHelper() {
-		console.log('TODO');
+	static registerHelper(...args) {
+		Helpers.registerHelper(...args);
 	}
 
 	static config() {

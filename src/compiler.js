@@ -1,4 +1,4 @@
-import * as CACHE from './cache';
+import CACHE from './cache';
 import {hashCode} from './utils';
 
 const JTML_SPACE = '__JTML-SPACE__';

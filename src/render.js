@@ -7,13 +7,13 @@ const JTML_EVENT_REGEX = /@(.*?)\((.*?)\)/g;
 
 export default class Render {
 	constructor(func) {
-		this.func = func;
+		this._func = func;
 		this._html = '';
 		this._fragment = null;
 	}
 
 	render(data, events) {
-		this._html = this.func(data, UTILS, HELPERS);
+		this._html = this._func(data, UTILS, HELPERS);
 
 		if (!events) {
 			return this;
@@ -28,9 +28,9 @@ export default class Render {
 				let eventType = args[1];
 				let handlers = args[2].trim().split(/\s+/);
 
-				handlers.forEach(handlers => {
-					eventElements[i].addEventListener(eventType, events[handlers]);
-				});
+				for (let j = 0; j < handlers.length; j++) {
+					eventElements[i].addEventListener(eventType, events[handlers[j]]);
+				}
 			});
 
 			eventElements[i].removeAttribute(EVENT_ATTRIBUTE_NAME);

@@ -1,14 +1,15 @@
 export default {
 	shouldWarn: false,
 	beVerbose: false,
-	_consolePrefix: `Slim Templates: `,
+	_consolePrefix: `JTML Templates: `,
 	warnings: {
 		missingTypeAttribute: `An attribute called "type" should exist on the template container.`,
-		incorrectTypeAttribute: `The attribute "type" on the template container should have a value of "slim-template".`,
+		incorrectTypeAttribute: `The attribute "type" on the template container should have a value of "jtml-template".`,
 		templateNotInScriptTag: `Templates should be placed inside of a script tag.`
 	},
 	errors: {
-		syntaxErrorWhileCompilingTemplate: `A Syntax Error occurred while compiling your template.`
+		syntaxErrorWhileCompilingTemplate: `A Syntax Error occurred while compiling your template.`,
+		invalidDomNodeOrSelector: `A DOM node, or selector must be used.`
 	},
 	standardOutput: function (consoleMethod, previousArgs) {
 		window.setTimeout(() => {

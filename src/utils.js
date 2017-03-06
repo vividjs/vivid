@@ -37,10 +37,25 @@ export function hashCode(str) {
 	return hash
 }
 
+export function getElement(selectorOrNode) {
+	if (isDOM(selectorOrNode)) {
+		return selectorOrNode;
+	}
+	else {
+		let element = document.querySelector(selectorOrNode);
+		if (element) {
+			return element;
+		}
+	}
+
+	return null;
+}
+
 export default {
 	regexEscape,
 	isDOM,
 	fragmentFromString,
 	encodeHtml,
-	hashCode
+	hashCode,
+	getElement
 };

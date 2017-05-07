@@ -22,6 +22,10 @@ class JTML {
 		Helpers.registerHelper(...args);
 	}
 
+	static get helpers() {
+		return Helpers.fn;
+	}
+
 	static config() {
 		console.log('TODO');
 	}

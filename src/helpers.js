@@ -1,12 +1,12 @@
+import {encodeHtml} from './utils';
+
 export let HELPERS = {
 	raw: output => output,
-
-	use: (id, data) => window.jtml.compile(id).render(data).html,
 };
 
 
-export function registerHelper(name, fn) {
-	HELPERS[name] = fn;
+export function registerHelper(name, fn, safe = true) {
+	HELPERS[name] = (!safe) ? fn : (...args) => encodeHtml(fn(...args));
 }
 
 

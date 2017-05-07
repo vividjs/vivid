@@ -26,8 +26,10 @@ class JTML {
 		return Helpers.fn;
 	}
 
-	static config() {
-		console.log('TODO');
+	static config(options = {}) {
+		if (options.syntax) {
+			Compiler.changeSyntax(options.syntax);
+		}
 	}
 }
 

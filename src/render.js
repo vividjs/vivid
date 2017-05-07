@@ -26,7 +26,7 @@ export default class Render {
 		for (let i = 0; i < eventElements.length; i++) {
 			eventElements[i].getAttribute('jtml-event').replace(JTML_EVENT_REGEX, (...args) => {
 				let eventType = args[1];
-				let handlers = args[2].trim().split(/\s+/);
+				let handlers = args[2].trim().split(/\s*,\s*/);
 
 				for (let j = 0; j < handlers.length; j++) {
 					eventElements[i].addEventListener(eventType, events[handlers[j]]);

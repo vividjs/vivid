@@ -2,7 +2,7 @@ import {encodeHtml} from './utils';
 
 export let HELPERS = {
 	raw: output => output,
-	dump: output => `<pre>${JSON.stringify(output, null, 2)}</pre>`
+	dump: output => `<pre>${encodeHtml(JSON.stringify(output, null, 2))}</pre>`
 };
 
 

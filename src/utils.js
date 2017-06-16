@@ -9,10 +9,6 @@ export function isDOM(obj) {
 	return !!(obj && typeof obj === "object" && obj.nodeType === 1 && obj.nodeName);
 }
 
-export function fragmentFromString(strHTML) {
-	return document.createRange().createContextualFragment(strHTML);
-}
-
 export function encodeHtml(input) {
 	if (/[&"'<>]/i.test(input)) {
 		return document.createElement('a').appendChild(
@@ -54,7 +50,6 @@ export function getElement(selectorOrNode) {
 export default {
 	regexEscape,
 	isDOM,
-	fragmentFromString,
 	encodeHtml,
 	hashCode,
 	getElement

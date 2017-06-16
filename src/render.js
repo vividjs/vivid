@@ -1,3 +1,4 @@
+import fragment from 'html-fragment';
 import UTILS from './utils';
 import HELPERS from './helpers';
 import LOGGER from './logger';
@@ -19,7 +20,7 @@ export default class Render {
 			return this;
 		}
 
-		this._fragment = UTILS.fragmentFromString(this._html);
+		this._fragment = fragment(this._html);
 
 		let eventElements = this._fragment.querySelectorAll(`[${EVENT_ATTRIBUTE_NAME}]`);
 

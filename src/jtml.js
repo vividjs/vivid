@@ -1,3 +1,4 @@
+import './polyfills/Array.from';
 import Compiler from './compiler';
 import Render from './render';
 import Templates from './templates';

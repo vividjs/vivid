@@ -28,9 +28,6 @@ class JTML {
 	}
 
 	static config(options = {}) {
-		if (options.syntax) {
-			Compiler.changeSyntax(options.syntax);
-		}
 	}
 }
 

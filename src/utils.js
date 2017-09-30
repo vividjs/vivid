@@ -2,13 +2,6 @@ export function regexEscape(string) {
 	return string.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"); // $& means the whole matched string
 }
 
-export function isDOM(obj) {
-	if ("HTMLElement" in window) {
-		return (obj && obj instanceof HTMLElement);
-	}
-	return !!(obj && typeof obj === "object" && obj.nodeType === 1 && obj.nodeName);
-}
-
 export function encodeHtml(input) {
 	if (/[&"'<>]/i.test(input)) {
 		return document.createElement('a').appendChild(
@@ -34,7 +27,7 @@ export function hashCode(str) {
 }
 
 export function getElement(selectorOrNode) {
-	if (isDOM(selectorOrNode)) {
+	if (selectorOrNode instanceof HTMLElement) {
 		return selectorOrNode;
 	}
 	else {
@@ -47,10 +40,25 @@ export function getElement(selectorOrNode) {
 	return null;
 }
 
+export function getQueryParams(url = document.location) {
+	const a = document.createElement('a');
+	a.href = url;
+	if (!a.search.length) {
+		return {}
+	}
+	return a.search
+		.replace(/^\?/, '')
+		.split('&')
+		.reduce((obj, item) => {
+			let split = item.split('=');
+			obj[split[0]] = split[1];
+			return obj;
+		}, {});
+}
+
 export default {
 	regexEscape,
-	isDOM,
 	encodeHtml,
 	hashCode,
-	getElement
+	getElement,
 };

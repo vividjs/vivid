@@ -1,7 +1,7 @@
 import UTILS from './utils';
 
 export function getTemplateContent(possibleSelectorOrHTMLOrNode) {
-	if (UTILS.isDOM(possibleSelectorOrHTMLOrNode)) {
+	if (possibleSelectorOrHTMLOrNode instanceof HTMLElement) {
 		return possibleSelectorOrHTMLOrNode.innerHTML;
 	}
 

@@ -1,27 +1,19 @@
 import CACHE from './cache';
 import {regexEscape as e, hashCode} from './utils';
+
 const JTML_SPACE = '__JTML-SPACE__';
+const SPACE_REGEX = new RegExp(JTML_SPACE, 'g');
+const NEW_LINES = /[\n\r\t]/g;
+const APOS = /'/g;
+const ESCAPOS = /\\'/g;
+const HELPER = /!\*=\w+ .+\*!/;
 
-let blockOpen = '{%';
-let blockClose = '%}';
-let outputOpen = '{{';
-let outputClose = '}}';
+const r1 = new RegExp(`(?:!\\*(.*?)\\*!)`, 'g');
+const r2 = new RegExp(`!\\*=([\\w!]+) +(.+?) *;* *\\*!`, 'g');
+const r3 = new RegExp(`!\\*= *(.+?) *;* *\\*!`, 'g');
+const r4 = new RegExp(`!\\*`, 'g');
+const r5 = new RegExp(`\\*!`, 'g');
 
-let r1 = null;
-let r2 = null;
-let r3 = null;
-let r4 = null;
-let r5 = null;
-
-generateRegex();
-
-function generateRegex() {
-	r1 = new RegExp(`(?:${e(outputOpen)}(.*?)${e(outputClose)})|(?:${e(blockOpen)}(.*?)${e(blockClose)})`, 'g');
-	r2 = new RegExp(`${e(outputOpen)}([\\w!]+) +(.+?) *;* *${e(outputClose)}`, 'g');
-	r3 = new RegExp(`${e(outputOpen)} *(.+?) *;* *${e(outputClose)}`, 'g');
-	r4 = new RegExp(`${e(blockOpen)}`, 'g');
-	r5 = new RegExp(`${e(blockClose)}`, 'g');
-}
 
 function customHelper(...replaceMatch) {
 	let command = replaceMatch[1];
@@ -29,84 +21,52 @@ function customHelper(...replaceMatch) {
 		.trim()
 		.replace(/([`'"]).*?[^\\]\1/g, m => m.replace(/\s/g, JTML_SPACE))
 		.split(/\s+/)
-		.map(arg => arg.replace(new RegExp(JTML_SPACE, 'g'), ' '));
+		.map(arg => arg.replace(SPACE_REGEX, ' '));
 
 	return {command, args};
 }
 
-function setLineNumbers(jtml) {
-	return jtml
-		.split(/\n/)
-		.map((line, i) => `${blockOpen} LINE(${i}); ${blockClose}${line}`)
-		.join(' ');
-}
-
 
 export function compile(jtml) {
-	let hash = hashCode(jtml);
 
-	// if this template exists in cache, use that instead
-	let preparedTemplate = CACHE.CACHE[hash];
-
-	if (preparedTemplate) {
-		return preparedTemplate;
+	if (CACHE.CACHE[jtml]) {
+		return CACHE.CACHE[jtml];
 	}
 
-	let functionContent = `
-		var errorLineNumber;
-		try {
-			var LINE = function (number) { errorLineNumber = number };
-			var p = [];
-			with (obj) {
-			p.push('${
+	let replaced = jtml.replace(NEW_LINES, ' ');
 
-		setLineNumbers(jtml)
-			.replace(/[\r\t]/g, ' ')
-			// .replace(/'(?![^{]*})/g, `\\'`)
+	// Escape all '
+	if (replaced.indexOf(`'`) > -1) {
+		replaced = replaced
+			.replace(APOS, `\\'`)
+			.replace(r1, match => match.replace(ESCAPOS, `'`))
+	}
 
-			// Escape all '
-			.replace(/'/g, `\\'`)
+	if (HELPER.test(replaced)) {
+		replaced = replaced.replace(r2, (...args) => {
+			let helperData = customHelper(...args);
+			return `', HELPERS.fn['${helperData.command}'](${helperData.args.join(', ')}), '`;
+		});
+	}
 
-			// Un-escape all ' inside of statements
-			.replace(r1, match => match.replace(/\\'/g, `'`))
+	// Parse output syntax
+	replaced = replaced.replace(r3, `', UTILS.encodeHtml($1), '`);
 
-			// Discover helpers
-			.replace(r2, (...args) => {
-				let helperData = customHelper(...args);
-				return `', HELPERS.fn['${helperData.command}'](${helperData.args.join(', ')}), '`;
-			})
+	// Parse opening code snippet
+	replaced = replaced.replace(r4, `');`);
 
-			// Parse output syntax
-			.replace(r3, `', UTILS.encodeHtml($1), '`)
+	// Parse closing code snippet
+	replaced = replaced.replace(r5, `p.push('`);
 
-			// Parse opening code snippet
-			.replace(r4, `');\n`)
 
-			// Parse closing code snippet
-			.replace(r5, `\np.push('`)
-		}');\n}
-			return p.join('')
-		} catch(e) {
-			e = 'JTML error, line ' + errorLineNumber + ': ' + e;
-			console.error(e);
-			return e;
-		}`;
+	let functionContent = `var p = [];p.push('${replaced}');\nreturn p.join('')`;
 
-	preparedTemplate = new Function('obj', 'UTILS', 'HELPERS', functionContent);
-	CACHE.CACHE[hash] = preparedTemplate;
-	// CACHE.deepCache(hash, functionContent);
-	return preparedTemplate;
+	let func = new Function('UTILS', 'HELPERS', functionContent);
+	CACHE.CACHE[jtml] = func;
+	return func;
 }
 
-export function changeSyntax(syntaxObject) {
-	blockOpen = syntaxObject.block[0];
-	blockClose = syntaxObject.block[1];
-	outputOpen = syntaxObject.output[0];
-	outputClose = syntaxObject.output[1];
-	generateRegex();
-}
 
 export default {
 	compile,
-	changeSyntax
 }

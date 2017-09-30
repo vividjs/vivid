@@ -4,6 +4,7 @@ import Render from './render';
 import Templates from './templates';
 import Cache from './cache';
 import Helpers from './helpers';
+import Blocks from './blocks';
 
 class JTML {
 	static compile(possibleSelectorOrHTMLOrDomNode) {
@@ -25,6 +26,14 @@ class JTML {
 
 	static get helpers() {
 		return Helpers.fn;
+	}
+
+	static registerBlock(...args) {
+		Blocks.registerBlock(...args);
+	}
+
+	static get blocks() {
+		return Blocks.fn;
 	}
 
 	static config(options = {}) {

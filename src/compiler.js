@@ -1,4 +1,5 @@
 import CACHE from './cache';
+import {BLOCKS} from './blocks';
 import {regexEscape as e, hashCode} from './utils';
 
 const JTML_SPACE = '__JTML-SPACE__';
@@ -34,6 +35,17 @@ export function compile(jtml) {
 	}
 
 	let replaced = jtml.replace(NEW_LINES, ' ');
+
+	if (replaced.indexOf('!#') > -1) {
+		replaced = replaced
+			.replace(/!#(.*?)#!/g, (c, m) => {
+				let details = m.trim().split(/\s+/);
+				if (!BLOCKS[details[0]]) {
+					throw new Error(`An unknown block helper was used: ${details[0]}`);
+				}
+				return BLOCKS[details[0]](...details.splice(1));
+			})
+	}
 
 	// Escape all '
 	if (replaced.indexOf(`'`) > -1) {

@@ -5,33 +5,32 @@ module.exports = {
 	entry: './src/jtml.js',
 	devtool: 'source-map',
 	output: {
-		path: './lib',
 		filename: 'jtml.js',
+		path: path.resolve(__dirname, 'lib'),
 		library: 'jtml',
 		libraryTarget: 'umd',
-		umdNamedDefine: true
+		libraryExport: "default"
 	},
 	module: {
-		loaders: [
+		rules: [
 			{
-				loader: 'babel',
 				test: /\.js$/,
+				include: /src/,
 				exclude: /node_modules/,
-				query: {
-					presets: ['es2015'],
-					plugins: ['babel-plugin-add-module-exports']
+				use: {
+					loader: 'babel-loader',
+					options: {
+						presets: ['env']
+					}
 				}
-			}
+			},
 		]
 	},
 	plugins: [
 		new webpack.optimize.UglifyJsPlugin({
 			compress: {
 				warnings: false,
-			},
-			output: {
-				comments: false,
-			},
+			}
 		}),
 	]
 };

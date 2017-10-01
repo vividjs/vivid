@@ -28,8 +28,8 @@ module.exports = {
 	},
 	plugins: [
 		new webpack.optimize.UglifyJsPlugin({
+			sourceMap: true,
 			compress: {
-				sourceMap: true,
 				warnings: false,
 			}
 		}),

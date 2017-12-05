@@ -1,21 +1,21 @@
 export let BLOCKS = {
 	each(key, discard, object) {
-		return `!* ${object}.forEach(function (${key}) { *!`;
+		return `{% ${object}.forEach(function (${key}) { %}`;
 	},
 	endeach() {
-		return `!* }); *!`
+		return `{% }); %}`
 	},
 	if(...args) {
-		return `!* if (${args.join(' ')}) { *!`;
+		return `{% if (${args.join(' ')}) { %}`;
 	},
 	elseif(...args) {
-		return `!* } else if (${args.join(' ')}) { *!`;
+		return `{% } else if (${args.join(' ')}) { %}`;
 	},
 	else() {
-		return `!* } else { *!`;
+		return `{% } else { %}`;
 	},
 	endif() {
-		return `!* } *!`;
+		return `{% } %}`;
 	}
 };
 

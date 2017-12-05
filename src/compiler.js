@@ -8,13 +8,13 @@ const R_SPACE = new RegExp(VIVID_SPACE, 'g');
 const R_NEW_LINES = /[\n\r\t]/g;
 const R_APOSTROPHE = /'/g;
 const R_ESC_APOSTROPHE = /\\'/g;
-const R_HELPER = /!\*=\w+ .+\*!/;
+const R_HELPER = /{{\w+ .+}}/;
 /* Syntax Resolving Regular Expressions */
-const R_ALL_CODE = new RegExp(`(?:!\\*(.*?)\\*!)`, 'g');
-const R_CUSTOM_HELPER = new RegExp(`!\\*=([\\w!]+) +(.+?) *;* *\\*!`, 'g');
-const R_OUTPUT_BLOCK = new RegExp(`!\\*= *(.+?) *;* *\\*!`, 'g');
-const R_OPENING_SYNTAX = new RegExp(`!\\*`, 'g');
-const R_CLOSING_SYNTAX = new RegExp(`\\*!`, 'g');
+const R_ALL_CODE = new RegExp(`(?:\\{\\%(.*?)\\%\\})`, 'g');
+const R_CUSTOM_HELPER = new RegExp(`\\{\\{([\\w!]+) +(.+?) *;* *\\}\\}`, 'g');
+const R_OUTPUT_BLOCK = new RegExp(`\\{\\{ *(.+?) *;* *\\}\\}`, 'g');
+const R_OPENING_SYNTAX = new RegExp(`\\{\\%`, 'g');
+const R_CLOSING_SYNTAX = new RegExp(`\\%\\}`, 'g');
 
 
 function customHelper(...replaceMatch) {
@@ -39,9 +39,9 @@ export function compile(template) {
 	let replaced = template.replace(R_NEW_LINES, ' ');
 
 	// Look for custom blocks and replace with regular code
-	if (replaced.indexOf('!#') > -1) {
+	if (replaced.indexOf('{#') > -1) {
 		replaced = replaced
-			.replace(/!#(.*?)#!/g, (c, m) => {
+			.replace(/{#(.*?)#}/g, (c, m) => {
 				let details = m.trim().split(/\s+/);
 				if (!BLOCKS[details[0]]) {
 					throw new Error(`An unknown block helper was used: ${details[0]}`);

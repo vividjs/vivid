@@ -1,10 +1,10 @@
 export default {
 	shouldWarn: false,
 	beVerbose: false,
-	_consolePrefix: `JTML Templates: `,
+	_consolePrefix: `VIVID: `,
 	warnings: {
 		missingTypeAttribute: `An attribute called "type" should exist on the template container.`,
-		incorrectTypeAttribute: `The attribute "type" on the template container should have a value of "jtml-template".`,
+		incorrectTypeAttribute: `The attribute "type" on the template container should have a value of "vivid-template".`,
 		templateNotInScriptTag: `Templates should be placed inside of a script tag.`
 	},
 	errors: {

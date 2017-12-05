@@ -1,4 +1,4 @@
-const localStorageKey = '__JTML_CACHED_TEMPLATES__';
+const localStorageKey = '__VIVID_CACHED_TEMPLATES__';
 
 let CACHE = {};
 

@@ -6,7 +6,7 @@ import Cache from './cache';
 import Helpers from './helpers';
 import Blocks from './blocks';
 
-class JTML {
+class Vivid {
 	static compile(possibleSelectorOrHTMLOrDomNode) {
 
 		let templateContent = Templates.getTemplateContent(possibleSelectorOrHTMLOrDomNode);
@@ -40,4 +40,4 @@ class JTML {
 	}
 }
 
-export default JTML;
+export default Vivid;

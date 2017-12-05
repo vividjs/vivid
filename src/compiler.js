@@ -1,10 +1,10 @@
 import CACHE from './cache';
 import {BLOCKS} from './blocks';
 
-const JTML_SPACE = '__JTML-SPACE__';
+const VIVID_SPACE = '__VIVID-SPACE__';
 
 /* Compiler Regular Expressions */
-const R_SPACE = new RegExp(JTML_SPACE, 'g');
+const R_SPACE = new RegExp(VIVID_SPACE, 'g');
 const R_NEW_LINES = /[\n\r\t]/g;
 const R_APOSTROPHE = /'/g;
 const R_ESC_APOSTROPHE = /\\'/g;
@@ -21,7 +21,7 @@ function customHelper(...replaceMatch) {
 	let command = replaceMatch[1];
 	let args = replaceMatch[2]
 		.trim()
-		.replace(/([`'"]).*?[^\\]\1/g, m => m.replace(/\s/g, JTML_SPACE))
+		.replace(/([`'"]).*?[^\\]\1/g, m => m.replace(/\s/g, VIVID_SPACE))
 		.split(/\s+/)
 		.map(arg => arg.replace(R_SPACE, ' '));
 
@@ -29,14 +29,14 @@ function customHelper(...replaceMatch) {
 }
 
 
-export function compile(jtml) {
+export function compile(template) {
 
-	if (CACHE.CACHE[jtml]) {
-		return CACHE.CACHE[jtml];
+	if (CACHE.CACHE[template]) {
+		return CACHE.CACHE[template];
 	}
 
 	// Toss all new lines
-	let replaced = jtml.replace(R_NEW_LINES, ' ');
+	let replaced = template.replace(R_NEW_LINES, ' ');
 
 	// Look for custom blocks and replace with regular code
 	if (replaced.indexOf('!#') > -1) {
@@ -77,7 +77,7 @@ export function compile(jtml) {
 
 	let functionContent = `var p = [];p.push('${replaced}');\nreturn p.join('')`;
 	let func = new Function('UTILS', 'HELPERS', functionContent);
-	CACHE.CACHE[jtml] = func;
+	CACHE.CACHE[template] = func;
 	return func;
 }
 

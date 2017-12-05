@@ -1,21 +1,21 @@
 {
-  "name": "jtml",
-  "version": "0.0.1-development",
-  "description": "JavaScript Template Markup Language",
-  "main": "./lib/jtml.js",
+  "name": "vivid",
+  "version": "0.0.3-development",
+  "description": "",
+  "main": "./lib/vivid.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/kevinokerlund/jtml.git"
+    "url": "git+https://github.com/vividjs/vivid.git"
   },
   "author": "Kevin Okerlund",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/kevinokerlund/jtml/issues"
+    "url": "https://github.com/vividjs/vivid/issues"
   },
-  "homepage": "https://github.com/kevinokerlund/jtml#readme",
+  "homepage": "https://github.com/vividjs/vivid#readme",
   "devDependencies": {
     "babel-core": "^6.26.0",
     "babel-loader": "^7.1.2",

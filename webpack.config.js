@@ -2,12 +2,12 @@ var path = require('path');
 var webpack = require('webpack');
 
 module.exports = {
-	entry: './src/jtml.js',
+	entry: './src/vivid.js',
 	devtool: 'source-map',
 	output: {
-		filename: 'jtml.js',
+		filename: 'vivid.js',
 		path: path.resolve(__dirname, 'lib'),
-		library: 'jtml',
+		library: 'Vivid',
 		libraryTarget: 'umd',
 		libraryExport: "default"
 	},

@@ -5,6 +5,7 @@ import Templates from './templates';
 import Cache from './cache';
 import Helpers from './helpers';
 import Blocks from './blocks';
+import {syntax} from './config';
 
 class Vivid {
 	static compile(possibleSelectorOrHTMLOrDomNode) {
@@ -37,6 +38,11 @@ class Vivid {
 	}
 
 	static config(options = {}) {
+	}
+
+	static setSyntax(newSyntax = {}) {
+		Object.assign(syntax, newSyntax);
+		Compiler.createSyntaxRegex();
 	}
 }
 

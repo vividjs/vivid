@@ -1,5 +1,7 @@
 import CACHE from './cache';
 import {BLOCKS} from './blocks';
+import {syntax} from "./config";
+import {regexEscape} from "./utils";
 
 const VIVID_SPACE = '__VIVID-SPACE__';
 
@@ -8,24 +10,41 @@ const R_SPACE = new RegExp(VIVID_SPACE, 'g');
 const R_NEW_LINES = /[\n\r\t]/g;
 const R_APOSTROPHE = /'/g;
 const R_ESC_APOSTROPHE = /\\'/g;
-const R_HELPER = /{{\w+ .+}}/;
+const R_MULTIPLE_WHITESPACE = /\s+/;
+const R_HELPER_STRINGS = /([`'"]).*?[^\\]\1/g;
 /* Syntax Resolving Regular Expressions */
-const R_ALL_CODE = new RegExp(`(?:\\{\\%(.*?)\\%\\})`, 'g');
-const R_CUSTOM_HELPER = new RegExp(`\\{\\{([\\w!]+) +(.+?) *;* *\\}\\}`, 'g');
-const R_OUTPUT_BLOCK = new RegExp(`\\{\\{ *(.+?) *;* *\\}\\}`, 'g');
-const R_OPENING_SYNTAX = new RegExp(`\\{\\%`, 'g');
-const R_CLOSING_SYNTAX = new RegExp(`\\%\\}`, 'g');
+let R_HELPER,
+	R_ALL_CODE,
+	R_CUSTOM_HELPER,
+	R_OUTPUT_BLOCK,
+	R_OPENING_SYNTAX,
+	R_CLOSING_SYNTAX,
+	R_CUSTOM_BLOCK;
 
+createSyntaxRegex();
 
 function customHelper(...replaceMatch) {
 	let command = replaceMatch[1];
 	let args = replaceMatch[2]
 		.trim()
-		.replace(/([`'"]).*?[^\\]\1/g, m => m.replace(/\s/g, VIVID_SPACE))
-		.split(/\s+/)
+		.replace(R_HELPER_STRINGS, m => m.replace(/\s/g, VIVID_SPACE))
+		.split(R_MULTIPLE_WHITESPACE)
 		.map(arg => arg.replace(R_SPACE, ' '));
 
 	return {command, args};
+}
+
+export function createSyntaxRegex() {
+	let e = Object.assign({}, syntax);
+	Object.keys(e).forEach(key => e[key] = regexEscape(e[key]));
+
+	R_HELPER = new RegExp(`${e.openingOutput}\\w+ .+${e.closingOutput}`);
+	R_ALL_CODE = new RegExp(`(?:${e.openingStatement}(.*?)${e.closingStatement})`, 'g');
+	R_CUSTOM_HELPER = new RegExp(`${e.openingOutput}([\\w]+) +(.+?) *;* *${e.closingOutput}`, 'g');
+	R_OUTPUT_BLOCK = new RegExp(`${e.openingOutput} *(.+?) *;* *${e.closingOutput}`, 'g');
+	R_OPENING_SYNTAX = new RegExp(`${e.openingStatement}`, 'g');
+	R_CLOSING_SYNTAX = new RegExp(`${e.closingStatement}`, 'g');
+	R_CUSTOM_BLOCK = new RegExp(`${e.openingBlockHelper}(.*?)${e.closingBlockHelper}`, 'g');
 }
 
 
@@ -39,10 +58,10 @@ export function compile(template) {
 	let replaced = template.replace(R_NEW_LINES, ' ');
 
 	// Look for custom blocks and replace with regular code
-	if (replaced.indexOf('{#') > -1) {
+	if (replaced.indexOf(syntax.openingBlockHelper) > -1) {
 		replaced = replaced
-			.replace(/{#(.*?)#}/g, (c, m) => {
-				let details = m.trim().split(/\s+/);
+			.replace(R_CUSTOM_BLOCK, (c, m) => {
+				let details = m.trim().split(R_MULTIPLE_WHITESPACE);
 				if (!BLOCKS[details[0]]) {
 					throw new Error(`An unknown block helper was used: ${details[0]}`);
 				}
@@ -83,5 +102,6 @@ export function compile(template) {
 
 
 export default {
+	createSyntaxRegex,
 	compile,
 }

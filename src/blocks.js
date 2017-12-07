@@ -1,21 +1,25 @@
+import {syntax} from './config';
+const open = syntax.openingStatement;
+const close = syntax.openingStatement;
+
 export let BLOCKS = {
 	each(key, discard, object) {
-		return `{% ${object}.forEach(function (${key}) { %}`;
+		return `${open} ${object}.forEach(function (${key}) { ${close}`;
 	},
 	endeach() {
-		return `{% }); %}`
+		return `${open} ); ${close}`
 	},
 	if(...args) {
-		return `{% if (${args.join(' ')}) { %}`;
+		return `${open} if (${args.join(' ')}) { ${close}`;
 	},
 	elseif(...args) {
-		return `{% } else if (${args.join(' ')}) { %}`;
+		return `${open} } else if (${args.join(' ')}) { ${close}`;
 	},
 	else() {
-		return `{% } else { %}`;
+		return `${open} } else { ${close}`;
 	},
 	endif() {
-		return `{% } %}`;
+		return `${open} } ${close}`;
 	}
 };
 

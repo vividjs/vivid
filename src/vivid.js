@@ -14,7 +14,9 @@ class Vivid {
 
 		let compiledTemplate = Compiler.compile(templateContent);
 
-		return new Render(compiledTemplate);
+		let render = Render.bind(null, compiledTemplate);
+
+		return {render};
 	}
 
 	static clearCache() {

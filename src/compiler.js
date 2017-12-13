@@ -12,6 +12,8 @@ const R_APOSTROPHE = /'/g;
 const R_ESC_APOSTROPHE = /\\'/g;
 const R_MULTIPLE_WHITESPACE = /\s+/;
 const R_HELPER_STRINGS = /([`'"]).*?[^\\]\1/g;
+const R_EVENT_CHECK = /v-[a-z]+="/g;
+const R_EVENT_REPLACE = /v-([a-z]+)="(.*?)"/g;
 /* Syntax Resolving Regular Expressions */
 let R_HELPER,
 	R_ALL_CODE,
@@ -39,7 +41,10 @@ export function createSyntaxRegex() {
 	Object.keys(e).forEach(key => e[key] = regexEscape(e[key]));
 
 	R_HELPER = new RegExp(`${e.openingOutput}\\w+ .+${e.closingOutput}`);
-	R_ALL_CODE = new RegExp(`(?:${e.openingStatement}(.*?)${e.closingStatement})`, 'g');
+	let betweenStatements = `(?:${e.openingStatement}(.*?)${e.closingStatement})`;
+	let betweenOutputs = `(?:${e.openingOutput}(.*?)${e.closingOutput})`;
+	let betweenBlocks = `(?:${e.openingBlockHelper}(.*?)${e.closingBlockHelper})`;
+	R_ALL_CODE = new RegExp([betweenStatements, betweenOutputs, betweenBlocks].join('|'), 'g');
 	R_CUSTOM_HELPER = new RegExp(`${e.openingOutput}([\\w]+) +(.+?) *;* *${e.closingOutput}`, 'g');
 	R_OUTPUT_BLOCK = new RegExp(`${e.openingOutput} *(.+?) *;* *${e.closingOutput}`, 'g');
 	R_OPENING_SYNTAX = new RegExp(`${e.openingStatement}`, 'g');
@@ -57,6 +62,13 @@ export function compile(template) {
 	// Toss all new lines
 	let replaced = template.replace(R_NEW_LINES, ' ');
 
+	// look for events
+	if (R_EVENT_CHECK.test(replaced)) {
+		replaced = replaced.replace(R_EVENT_REPLACE, (c, type, callback) => {
+			return `${syntax.openingOutput} EVENT('${type}',function($event){${callback}}.bind(this)); ${syntax.closingOutput}`;
+		});
+	}
+
 	// Look for custom blocks and replace with regular code
 	if (replaced.indexOf(syntax.openingBlockHelper) > -1) {
 		replaced = replaced
@@ -69,7 +81,7 @@ export function compile(template) {
 			})
 	}
 
-	// Escape all ' inside of code blocks
+	// Escape all ' outside of code blocks
 	if (replaced.indexOf(`'`) > -1) {
 		replaced = replaced
 			.replace(R_APOSTROPHE, `\\'`)
@@ -94,8 +106,8 @@ export function compile(template) {
 	replaced = replaced.replace(R_CLOSING_SYNTAX, `p.push('`);
 
 
-	let functionContent = `var p = [];p.push('${replaced}');\nreturn p.join('')`;
-	let func = new Function('UTILS', 'HELPERS', functionContent);
+	let functionContent = `var p = [];p.push('${replaced}');\nreturn p.join('');`;
+	let func = new Function('UTILS', 'HELPERS', 'EVENT', functionContent);
 	CACHE.CACHE[template] = func;
 	return func;
 }

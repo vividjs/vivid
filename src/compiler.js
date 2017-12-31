@@ -62,13 +62,6 @@ export function compile(template) {
 	// Toss all new lines
 	let replaced = template.replace(R_NEW_LINES, ' ');
 
-	// look for events
-	if (R_EVENT_CHECK.test(replaced)) {
-		replaced = replaced.replace(R_EVENT_REPLACE, (c, type, callback) => {
-			return `${syntax.openingOutput} EVENT('${type}',function($event){${callback}}.bind(this)); ${syntax.closingOutput}`;
-		});
-	}
-
 	// Look for custom blocks and replace with regular code
 	if (replaced.indexOf(syntax.openingBlockHelper) > -1) {
 		replaced = replaced
@@ -105,6 +98,12 @@ export function compile(template) {
 	// Parse closing code snippet
 	replaced = replaced.replace(R_CLOSING_SYNTAX, `p.push('`);
 
+	// look for events
+	if (R_EVENT_CHECK.test(replaced)) {
+		replaced = replaced.replace(R_EVENT_REPLACE, (c, type, callback) => {
+			return `');   p.push(EVENT('${type}', function($event){${callback}}.bind(this)));   p.push('`;
+		});
+	}
 
 	let functionContent = `var p = [];p.push('${replaced}');\nreturn p.join('');`;
 	let func = new Function('UTILS', 'HELPERS', 'EVENT', functionContent);

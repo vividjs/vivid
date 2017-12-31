@@ -68,3 +68,29 @@ Result:
     </ul>
 </div>
 ```
+
+### Events
+
+To attach an event to an element, an HTML attribute, `v-eventTypeName` is used.
+For example, to attach a click event, you would use `v-click`, or for mouseenter `v-mouseenter`.
+The value of the attribute is set to a callback you want to use.
+There is 1 reserved argument called `$event` which provides the event that was called. 
+
+#### Event Example:
+
+```javascript
+const template = `
+    <div v-click="this.clickHandler($event, this.name)">Vivid</div>
+`;
+
+const data = {
+	clickHandler(e, name) {
+		console.log(e, name);
+	},
+	name: 'Vivid'
+};
+
+Vivid
+    .compile(template)
+    .render('#source-container', data);
+```

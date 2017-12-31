@@ -1,6 +1,6 @@
 {
   "name": "vivid",
-  "version": "0.0.3-development",
+  "version": "0.0.4-development",
   "description": "",
   "main": "./lib/vivid.js",
   "scripts": {

@@ -56,8 +56,7 @@ const people = [
 
 Vivid
     .compile(template)
-    .render(people)
-    .html('#source-container');
+    .render('#source-container', people);
 ```
 
 Result:

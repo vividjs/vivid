@@ -4,7 +4,7 @@ import HELPERS from './helpers';
 import {makeEvent} from './events';
 import LOGGER from './logger';
 
-export default function (func, data, selectorOrNode) {
+export default function (func, selectorOrNode, data) {
 	let element = UTILS.getElement(selectorOrNode);
 
 	if (!element) {
